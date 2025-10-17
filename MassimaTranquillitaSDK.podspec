@@ -20,6 +20,13 @@ Pod::Spec.new do |s|
 
   # Subspec Call Directory Extension
   s.subspec 'CallDirectoryExtension' do |ext|
-    ext.source_files = 'MassimaTranquillitaExtension/**/*.swift'
-  end
+    # Specifica ESATTAMENTE il file.
+    ext.source_files = 'MassimaTranquillitaExtension/CallDirectoryHandler.swift'
+    
+    # Rimuovi l'ereditarietà di tutti i file dal pod principale
+    ext.preserve_paths = 'MassimaTranquillitaExtension/Info.plist'
+    
+    # Rimuovi le dipendenze del pod principale (se ne avessi)
+    # ext.dependency 'MassimaTranquillitaSDK/Core' # Esempio, non applicabile qui.
+end
 end
