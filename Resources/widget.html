@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Massima Tranquillità Widget</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .widget {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #CDE5F0;
+            border-radius: 16px;
+            padding: 16px 24px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .widget h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #2B577B;
+        }
+
+        .toggle {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            background: #ccc;
+            border-radius: 14px;
+            transition: background 0.3s;
+        }
+
+        .toggle.active {
+            background: #4caf50;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            top: 2px;
+            left: 2px;
+            border-radius: 50%;
+            background: white;
+            transition: left 0.3s;
+        }
+
+        .toggle.active::after {
+            left: 26px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="widget" id="widget">
+    <h2>Massima Tranquillità</h2>
+    <div id="toggle" class="toggle"></div>
+</div>
+
+<script>
+    const toggle = document.getElementById('toggle');
+    const widget = document.getElementById('widget');
+
+    // iOS usa window.webkit.messageHandlers.<name>.postMessage
+    function callBridge(method) {
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.CallBlockerBridge) {
+            try {
+                window.webkit.messageHandlers.CallBlockerBridge.postMessage({ action: method });
+            } catch (e) {
+                console.warn(`Errore durante ${method}:`, e);
+            }
+        } else {
+            console.error("Bridge iOS non pronto.");
+        }
+    }
+
+    // Funzione per aggiornare lo stato del toggle
+    function updateStatus(active) {
+        if (active) toggle.classList.add('active');
+        else toggle.classList.remove('active');
+    }
+
+    // Click sul toggle -> richiedi ruolo
+    toggle.addEventListener('click', e => {
+        e.stopPropagation();
+        callBridge("requestRole");
+    });
+
+    // Click sulla widget -> apri UI servizio
+    widget.addEventListener('click', () => {
+        callBridge("openServiceUI");
+    });
+
+    // JS chiamato da Swift quando lo stato cambia
+    function setCallScreeningStatus(active) {
+        updateStatus(active);
+    }
+</script>
+</body>
+</html>
