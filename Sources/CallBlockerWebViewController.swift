@@ -1,8 +1,8 @@
 //
-//  Untitled.swift
-//  MassimaTranquillitaSDK
+//  Untitled.swift
+//  MassimaTranquillitaSDK
 //
-//  Created by Davide Dinoi on 17/10/25.
+//  Created by Davide Dinoi on 17/10/25.
 //
 import UIKit
 import WebKit
@@ -30,6 +30,7 @@ public class CallBlockerWebViewController: UIViewController {
         if isViewLoaded {
             // Se la vista è già caricata (e la webView è viva), carica subito
             let request = URLRequest(url: url)
+            // L'errore originale (nil webView) è stato risolto grazie a isViewLoaded
             webView.load(request)
         } else {
             // Altrimenti, salva l'URL per caricarlo in viewDidLoad
@@ -78,8 +79,10 @@ public class CallBlockerWebViewController: UIViewController {
         }
     }
     
+    // ⚠️ PUNTO 1: AGGIORNAMENTO DEL NOME DELLA FUNZIONE CALLBACK JAVASCRIPT
     private func callJS_updateStatus(active: Bool) {
-        callJS("setCallScreeningStatus(\(active ? "true" : "false"));")
+        // La funzione JS globale è `window.setCallScreeningStatus`
+        callJS("window.setCallScreeningStatus(\(active ? "true" : "false"));")
     }
     
     private func escapeForJS(_ s: String) -> String {
@@ -126,7 +129,9 @@ extension CallBlockerWebViewController: WKScriptMessageHandler {
         case "blockNumber":
             if let number = body["number"] as? String {
                 print("Numero da bloccare: \(number)")
-                callJS("onNumberBlocked('\(escapeForJS(number))');")
+                // ⚠️ PUNTO 2: AGGIORNAMENTO DEL NOME DELLA FUNZIONE CALLBACK JAVASCRIPT
+                // La funzione JS globale è `window.onNumberBlocked`
+                callJS("window.onNumberBlocked('\(escapeForJS(number))');")
             }
         case "requestRole": requestRole()
         case "openServiceUI":
@@ -141,6 +146,10 @@ extension CallBlockerWebViewController: WKScriptMessageHandler {
 // MARK: - WKNavigationDelegate
 extension CallBlockerWebViewController: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        // La WebView ha finito il caricamento. Adesso possiamo dire a JS che il bridge è pronto.
+        // Se `window.webkit.messageHandlers.CallBlockerBridge` esiste (ed è l'unico check in React), questo basta.
+        // Tieni presente che il tuo codice React si basa sul check di `window.webkit.messageHandlers`
+        // e non su questa variabile JS. Potrebbe non essere più necessaria se React è stato modificato come suggerito.
         callJS("window.CallBlockerBridgeReady = true;")
     }
 }
