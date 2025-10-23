@@ -97,13 +97,12 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
                 return
             }
 
-            // Assumendo che CallBlockerWebViewController sia definito altrove
             let webVC = CallBlockerWebViewController()
             webVC.modalPresentationStyle = .formSheet
 
-            // 👉 carica il tuo indirizzo locale
+            // 👉 Adesso loadURL salva l'URL e lo carica in viewDidLoad
             if let url = URL(string: "http://192.168.1.226:3000/") {
-                webVC.loadURL(url) // Assumendo che questo metodo sia definito in CallBlockerWebViewController
+                webVC.loadURL(url)
             }
 
             topVC.present(webVC, animated: true)

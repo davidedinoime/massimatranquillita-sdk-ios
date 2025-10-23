@@ -9,19 +9,34 @@ import WebKit
 import CallKit
 
 public class CallBlockerWebViewController: UIViewController {
-
+    
     public var webView: WKWebView!
-
+    
+    private var urlToLoad: URL?
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupWebView()
+        
+        // 👉 Carica l'URL solo dopo che la webView è stata inizializzata
+        if let url = urlToLoad {
+            loadURL(url)
+            // Resetta per evitare ricaricamenti non voluti se il VC viene riusato
+            urlToLoad = nil
+        }
     }
-
+    
     public func loadURL(_ url: URL) {
-        let request = URLRequest(url: url)
-        webView.load(request)
+        if isViewLoaded {
+            // Se la vista è già caricata (e la webView è viva), carica subito
+            let request = URLRequest(url: url)
+            webView.load(request)
+        } else {
+            // Altrimenti, salva l'URL per caricarlo in viewDidLoad
+            urlToLoad = url
+        }
     }
-
+    
     public func loadWidgetHTML(named name: String = "widget") {
         if let url = Bundle(for: CallBlockerWebViewController.self).url(forResource: name, withExtension: "html") {
             webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
@@ -29,13 +44,13 @@ public class CallBlockerWebViewController: UIViewController {
             webView.loadHTMLString("<html><body>Widget non trovato</body></html>", baseURL: nil)
         }
     }
-
+    
     private func setupWebView() {
         let config = WKWebViewConfiguration()
         let contentController = WKUserContentController()
         contentController.add(self, name: "CallBlockerBridge")
         config.userContentController = contentController
-
+        
         if #available(iOS 14.0, *) {
             let prefs = WKWebpagePreferences()
             prefs.allowsContentJavaScript = true
@@ -43,12 +58,12 @@ public class CallBlockerWebViewController: UIViewController {
         } else {
             config.preferences.javaScriptEnabled = true
         }
-
+        
         webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = self
         webView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(webView)
-
+        
         NSLayoutConstraint.activate([
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -56,21 +71,21 @@ public class CallBlockerWebViewController: UIViewController {
             webView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-
+    
     private func callJS(_ js: String) {
         DispatchQueue.main.async {
             self.webView.evaluateJavaScript(js, completionHandler: nil)
         }
     }
-
+    
     private func callJS_updateStatus(active: Bool) {
         callJS("setCallScreeningStatus(\(active ? "true" : "false"));")
     }
-
+    
     private func escapeForJS(_ s: String) -> String {
         return s.replacingOccurrences(of: "'", with: "\\'")
     }
-
+    
     private func getCallScreeningStatusAsync() {
         let extensionID = MassimaTranquillitaSDK.EXTENSION_ID
         if #available(iOS 11.0, *) {
@@ -82,7 +97,7 @@ public class CallBlockerWebViewController: UIViewController {
             callJS_updateStatus(active: false)
         }
     }
-
+    
     private func requestRole() {
         DispatchQueue.main.async {
             if let url = URL(string: UIApplication.openSettingsURLString) {
@@ -93,7 +108,7 @@ public class CallBlockerWebViewController: UIViewController {
             }
         }
     }
-
+    
     private func openServiceUI(urlString: String) {
         guard let url = URL(string: urlString) else { return }
         DispatchQueue.main.async {
@@ -106,7 +121,7 @@ public class CallBlockerWebViewController: UIViewController {
 extension CallBlockerWebViewController: WKScriptMessageHandler {
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let body = message.body as? [String: Any], let method = body["method"] as? String else { return }
-
+        
         switch method {
         case "blockNumber":
             if let number = body["number"] as? String {
