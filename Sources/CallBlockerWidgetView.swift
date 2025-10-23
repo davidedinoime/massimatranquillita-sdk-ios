@@ -10,19 +10,19 @@ import WebKit
 import CallKit
 
 public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigationDelegate {
-
+    
     public var webView: WKWebView!
-
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setupWebView()
     }
-
+    
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupWebView()
     }
-
+    
     private func setupWebView() {
         let cfg = WKWebViewConfiguration()
         if #available(iOS 14.0, *) {
@@ -32,23 +32,23 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
         } else {
             cfg.preferences.javaScriptEnabled = true
         }
-
+        
         cfg.userContentController.add(self, name: "CallBlockerBridge")
         webView = WKWebView(frame: .zero, configuration: cfg)
         webView.navigationDelegate = self
         webView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(webView)
-
+        
         NSLayoutConstraint.activate([
             webView.leadingAnchor.constraint(equalTo: leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: trailingAnchor),
             webView.topAnchor.constraint(equalTo: topAnchor),
             webView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-
+        
         loadWidgetHtml()
     }
-
+    
     public func loadWidgetHtml() {
         if let url = Bundle(for: CallBlockerWidgetView.self).url(forResource: "widget", withExtension: "html") {
             webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
@@ -56,17 +56,17 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
             webView.loadHTMLString("<html><body>Widget non trovato</body></html>", baseURL: nil)
         }
     }
-
+    
     private func callJS(_ js: String) {
         DispatchQueue.main.async { [weak self] in
             self?.webView.evaluateJavaScript(js, completionHandler: nil)
         }
     }
-
+    
     private func callJS_updateStatus(active: Bool) {
         callJS("updateStatusCallback(\(active ? "true" : "false"))")
     }
-
+    
     // MARK: - WKScriptMessageHandler
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let body = message.body as? [String:Any], let action = body["action"] as? String else { return }
@@ -77,7 +77,7 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
         default: break
         }
     }
-
+    
     private func getCallScreeningStatusAsync() {
         let extensionID = MassimaTranquillitaSDK.EXTENSION_ID
         if #available(iOS 11.0, *) {
@@ -88,21 +88,64 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
             callJS_updateStatus(active: false)
         }
     }
-
+    
     private func requestRole() {
-        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-            UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+        UIViewController, completion: @escaping (Bool) -> Void) {
+            let alert = UIAlertController(
+                title: "Attiva blocco chiamate",
+                message: "Per abilitare il blocco chiamate, devi attivare l'estensione Massima Tranquillità nelle impostazioni di iOS.",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "Annulla", style: .cancel) { _ in completion(false) })
+            alert.addAction(UIAlertAction(title: "Apri Impostazioni", style: .default) { _ in
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+                completion(true)
+            })
+            viewController.present(alert, animated: true)
+        }
+        
+        private func openServiceUI() {
+            DispatchQueue.main.async {
+                guard let topVC = UIApplication.shared.topViewController() else {
+                    print("❌ Nessun ViewController per presentare la WebView")
+                    return
+                }
+                
+                let webVC = CallBlockerWebViewController()
+                webVC.modalPresentationStyle = .formSheet
+                
+                // 👉 carica il tuo indirizzo locale
+                if let url = URL(string: "http://192.168.1.226:3000/") {
+                    webVC.loadURL(url)
+                }
+                
+                topVC.present(webVC, animated: true)
+            }
+        }
+        
+        // MARK: - WKNavigationDelegate
+        public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            callJS("window.CallBlockerBridgeReady = true;")
         }
     }
-
-    private func openServiceUI() {
-        if let url = Bundle(for: CallBlockerWidgetView.self).url(forResource: "widget", withExtension: "html") {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    
+    extension UIApplication {
+        func topViewController(
+            base: UIViewController? = UIApplication.shared.connectedScenes
+                .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+                .first?.rootViewController
+        ) -> UIViewController? {
+            if let nav = base as? UINavigationController {
+                return topViewController(base: nav.visibleViewController)
+            }
+            if let tab = base as? UITabBarController, let selected = tab.selectedViewController {
+                return topViewController(base: selected)
+            }
+            if let presented = base?.presentedViewController {
+                return topViewController(base: presented)
+            }
+            return base
         }
     }
-
-    // MARK: - WKNavigationDelegate
-    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        callJS("window.CallBlockerBridgeReady = true;")
-    }
-}
