@@ -16,7 +16,7 @@ public class MassimaTranquillitaSDK {
         print("MassimaTranquillitaSDK inizializzato ✅")
     }
     
-    public static func loadCallersFromAppGroup() -> [Caller] {
+    func loadCallersFromAppGroup() -> [Caller] {
         guard let userDefaults = UserDefaults(suiteName: APP_GROUP),
               let savedArray = userDefaults.array(forKey: DATA_KEY) as? [[String: Any]] else {
             print("[SDK] Nessun caller trovato")
