@@ -23,7 +23,6 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'Extension' do |ss|
-    ext.source_files = 'MassimaTranquillitaExtension/CallDirectoryHandler.swift'
     ss.source_files = 'Sources/MassimaTranquillitaSDK.swift'
     # Niente UIKit, niente WebView
   end
