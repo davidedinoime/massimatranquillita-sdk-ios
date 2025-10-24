@@ -22,8 +22,9 @@ Pod::Spec.new do |s|
     ext.preserve_paths = 'MassimaTranquillitaExtension/Info.plist'
   end
 
-  # 👉 Subspec leggera per App Extension (senza UIKit)
   s.subspec 'Extension' do |ss|
+    ext.source_files = 'MassimaTranquillitaExtension/CallDirectoryHandler.swift'
     ss.source_files = 'Sources/MassimaTranquillitaSDK.swift'
+    # Niente UIKit, niente WebView
   end
 end
