@@ -53,16 +53,37 @@ public class MassimaTranquillitaSDK {
     public static func requestCallScreeningRole(from viewController: UIViewController, completion: @escaping (Bool) -> Void) {
         let alert = UIAlertController(
             title: "Attiva blocco chiamate",
-            message: "Per abilitare il blocco chiamate, devi attivare l'estensione Massima Tranquillità nelle impostazioni di iOS.",
+            message: "Per abilitare il blocco chiamate, attiva l'estensione Massima Tranquillità nelle impostazioni di iOS.",
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "Annulla", style: .cancel) { _ in completion(false) })
+
+        alert.addAction(UIAlertAction(title: "Annulla", style: .cancel) { _ in
+            completion(false)
+        })
+
         alert.addAction(UIAlertAction(title: "Apri Impostazioni", style: .default) { _ in
-            if let url = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            if #available(iOS 13.4, *) {
+                // 🔹 Metodo nativo per aprire direttamente la sezione “Blocco chiamate e identificazione”
+                CXCallDirectoryManager.sharedInstance.openSettings { error in
+                    if let error = error {
+                        print("❌ Errore aprendo impostazioni blocco chiamate: \(error.localizedDescription)")
+                        DispatchQueue.main.async {
+                            // fallback alle impostazioni generali
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(url)
+                            }
+                        }
+                    }
+                }
+            } else {
+                // 🔹 Fallback per iOS < 13.4
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
             }
             completion(true)
         })
+
         viewController.present(alert, animated: true)
     }
 
