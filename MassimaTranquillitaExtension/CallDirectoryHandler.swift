@@ -2,7 +2,7 @@ import Foundation
 import CallKit
 
 let DATA_KEY = "CALLER_LIST"
-let APP_GROUP = "group.io.massimatranquillita"
+let APP_GROUP = "group.com.massimatranquillita"
 
 class Caller: Codable {
     let name: String
