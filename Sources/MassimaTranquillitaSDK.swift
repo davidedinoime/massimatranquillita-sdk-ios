@@ -76,13 +76,6 @@ public class MassimaTranquillitaSDK {
         viewController.present(alert, animated: true)
     }
 
-    public static func openServiceUI(from viewController: UIViewController, url: String) {
-        guard let link = URL(string: url) else { return }
-        let webVC = CallBlockerWebViewController()
-        webVC.loadURL(link)
-        viewController.present(webVC, animated: true)
-    }
-
     // MARK: - Blocca numeri
     public static func blockNumber(_ number: String) {
         print("Numero bloccato: \(number)")
