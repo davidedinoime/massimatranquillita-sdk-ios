@@ -67,18 +67,7 @@ public class MassimaTranquillitaSDK {
                 CXCallDirectoryManager.sharedInstance.openSettings { error in
                     if let error = error {
                         print("❌ Errore aprendo impostazioni blocco chiamate: \(error.localizedDescription)")
-                        DispatchQueue.main.async {
-                            // fallback alle impostazioni generali
-                            if let url = URL(string: UIApplication.openSettingsURLString) {
-                                UIApplication.shared.open(url)
-                            }
-                        }
                     }
-                }
-            } else {
-                // 🔹 Fallback per iOS < 13.4
-                if let url = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 }
             }
             completion(true)
