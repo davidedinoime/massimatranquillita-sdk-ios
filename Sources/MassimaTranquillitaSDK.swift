@@ -9,11 +9,6 @@ import CallKit
 
 public class MassimaTranquillitaSDK {
     
-    public struct Constants {
-        public static let DATA_KEY = "CALLER_LIST"
-        public static let APP_GROUP = "group.com.massimatranquillita"
-    }
-    
     public static let EXTENSION_ID = "com.massimatranquillita.CallDirectoryExtension"
     
     // MARK: - Inizializzazione SDK
@@ -85,41 +80,4 @@ public class MassimaTranquillitaSDK {
     public static func blockNumber(_ number: String) {
         print("Numero bloccato: \(number)")
     }
-    
-    // MARK: - Core Logic (Spostata qui)
-    public static func handleCallDirectoryRequest(context: CXCallDirectoryExtensionContext) {
-            var callerList = getCallerList() // Chiama il metodo statico helper
-            
-            if callerList.isEmpty {
-                callerList.append(Caller(dictionary: ["name":"Test","numbersToAdd":[391234567890],"numbersToRemove":[]]))
-                print("[MassimaTranquillitaSDK] Added dummy caller for testing")
-            }
-            
-            addBlockingNumbers(callerList: callerList, context: context) // Chiama il metodo statico helper
-        }
-        
-        private static func addBlockingNumbers(callerList: [Caller], context: CXCallDirectoryExtensionContext) {
-            var allNumbers = Set<UInt64>()
-            
-            for caller in callerList {
-                allNumbers.formUnion(caller.numbersToAdd)
-            }
-            
-            let sortedNumbers = allNumbers.sorted()
-            for number in sortedNumbers {
-                context.addBlockingEntry(withNextSequentialPhoneNumber: CXCallDirectoryPhoneNumber(number))
-            }
-        }
-        
-        private static func getCallerList() -> [Caller] {
-            // Usa le costanti incapsulate
-            guard let userDefaults = UserDefaults(suiteName: MassimaTranquillitaSDK.Constants.APP_GROUP),
-                  let savedArray = userDefaults.array(forKey: MassimaTranquillitaSDK.Constants.DATA_KEY) as? [[String: Any]] else {
-                print("[MassimaTranquillitaSDK] No callers found")
-                return []
-            }
-            
-            print("[MassimaTranquillitaSDK] Loaded \(savedArray.count) callers")
-            return savedArray.map { Caller(dictionary: $0) }
-        }
 }
