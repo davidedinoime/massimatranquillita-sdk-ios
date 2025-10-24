@@ -19,13 +19,15 @@ class Caller: Codable {
 class CallDirectoryHandler: CXCallDirectoryProvider {
 
     override func beginRequest(with context: CXCallDirectoryExtensionContext) {
-        let callerList = getCallerList()
+        var callerList = getCallerList()
 
-        if context.isIncremental {
-            updateBlockingNumbers(callerList: callerList, context: context)
-        } else {
-            addBlockingNumbers(callerList: callerList, context: context)
+        // Aggiungi numero di test se lista vuota
+        if callerList.isEmpty {
+            callerList.append(Caller(dictionary: ["name":"Test","numbersToAdd":[391234567890],"numbersToRemove":[]]))
+            print("[CallDirectoryExtension] Added dummy caller for testing")
         }
+
+        addBlockingNumbers(callerList: callerList, context: context)
 
         context.completeRequest()
         print("[CallDirectoryExtension] Request completed ✅")
