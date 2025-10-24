@@ -28,5 +28,9 @@ Pod::Spec.new do |s|
     
     # Rimuovi le dipendenze del pod principale (se ne avessi)
     # ext.dependency 'MassimaTranquillitaSDK/Core' # Esempio, non applicabile qui.
-end
+  end
+  s.subspec 'Extension' do |ss|
+    ss.source_files = 'Sources/MassimaTranquillitaSDK.swift'
+    # Nessuna risorsa o file UIKit che possa rompere l’estensione
+  end
 end
