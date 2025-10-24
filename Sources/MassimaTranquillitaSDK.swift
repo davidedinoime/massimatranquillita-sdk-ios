@@ -7,18 +7,6 @@
 import UIKit
 import CallKit
 
-class Caller: Codable {
-    let name: String
-    let numbersToAdd: [UInt64]
-    let numbersToRemove: [UInt64]
-    
-    init(dictionary: [String: Any]) {
-        self.name = dictionary["name"] as? String ?? ""
-        self.numbersToAdd = (dictionary["numbersToAdd"] as? [NSNumber])?.map { $0.uint64Value } ?? []
-        self.numbersToRemove = (dictionary["numbersToRemove"] as? [NSNumber])?.map { $0.uint64Value } ?? []
-    }
-}
-
 public class MassimaTranquillitaSDK {
     
     public struct Constants {
