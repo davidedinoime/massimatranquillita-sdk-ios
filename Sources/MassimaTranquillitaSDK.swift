@@ -17,26 +17,20 @@ public class MassimaTranquillitaSDK {
     }
 
     // MARK: - Impostazioni generali
-    public static func openSettings() {
+    func openSettings(resolve: @escaping (Bool) -> Void, reject: @escaping (String, String, Error?) -> Void) {
         if #available(iOS 13.4, *) {
-            do {
-                try CXCallDirectoryManager.sharedInstance.openSettings { error in
-                    if let error = error {
-                        print("Errore aprendo le impostazioni: \(error.localizedDescription)")
-                        // Qui puoi fare il reject (se usi Promise)
-                        // reject("openSettings", "Failed to open settings", error)
-                    } else {
-                        print("[BlockList] Impostazioni aperte correttamente")
-                        // resolve(true)
-                    }
+            CXCallDirectoryManager.sharedInstance.openSettings { error in
+                if let error = error {
+                    print("[BlockList] Errore aprendo le impostazioni: \(error.localizedDescription)")
+                    reject("openSettings", "Failed to open settings", error)
+                } else {
+                    print("[BlockList] Impostazioni aperte correttamente")
+                    resolve(true)
                 }
-            } catch {
-                print("Eccezione aprendo impostazioni: \(error.localizedDescription)")
-                // reject("open_settings_error", "Impossibile aprire le impostazioni", error)
             }
         } else {
-            print("Open settings non supportato su questa versione iOS")
-            // reject("open_settings_error", "Open settings not supported on this iOS version", nil)
+            print("[BlockList] Open settings non supportato su questa versione iOS")
+            reject("open_settings_error", "Open settings not supported on this iOS version", nil)
         }
     }
 
