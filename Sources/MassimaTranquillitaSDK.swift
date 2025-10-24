@@ -9,7 +9,7 @@ import CallKit
 
 public class MassimaTranquillitaSDK {
     
-    public static let EXTENSION_ID = "io.massimatranquillita.CallDirectoryExtension"
+    public static let EXTENSION_ID = "com.massimatranquillita.CallDirectoryExtension"
 
     // MARK: - Inizializzazione SDK
     public static func initialize() {
@@ -18,8 +18,25 @@ public class MassimaTranquillitaSDK {
 
     // MARK: - Impostazioni generali
     public static func openSettings() {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        if #available(iOS 13.4, *) {
+            do {
+                try CXCallDirectoryManager.sharedInstance.openSettings { error in
+                    if let error = error {
+                        print("Errore aprendo le impostazioni: \(error.localizedDescription)")
+                        // Qui puoi fare il reject (se usi Promise)
+                        // reject("openSettings", "Failed to open settings", error)
+                    } else {
+                        print("[BlockList] Impostazioni aperte correttamente")
+                        // resolve(true)
+                    }
+                }
+            } catch {
+                print("Eccezione aprendo impostazioni: \(error.localizedDescription)")
+                // reject("open_settings_error", "Impossibile aprire le impostazioni", error)
+            }
+        } else {
+            print("Open settings non supportato su questa versione iOS")
+            // reject("open_settings_error", "Open settings not supported on this iOS version", nil)
         }
     }
 

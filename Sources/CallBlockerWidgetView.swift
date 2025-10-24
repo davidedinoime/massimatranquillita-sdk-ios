@@ -109,7 +109,6 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
         }
     }
     
-    #if !APP_EXTENSION
     // MARK: - Correzione Logica e Sintassi di requestRole()
     private func requestRole() {
         DispatchQueue.main.async {
@@ -140,7 +139,6 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
             topVC.present(alert, animated: true)
         }
     }
-    #endif
     
     // MARK: - WKNavigationDelegate
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -150,7 +148,7 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
 
 // ----------------------------------------------------------------------
 
-#if !APP_EXTENSION
+
 // MARK: - Estensione UIApplication (Spostata fuori dalla classe per coerenza)
 extension UIApplication {
     func topViewController(
@@ -172,4 +170,3 @@ extension UIApplication {
         return base
     }
 }
-#endif
