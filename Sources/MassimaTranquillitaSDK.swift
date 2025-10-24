@@ -15,6 +15,15 @@ public class MassimaTranquillitaSDK {
     public static func initialize() {
         print("MassimaTranquillitaSDK inizializzato ✅")
     }
+    
+    public static func loadCallersFromAppGroup() -> [Caller] {
+        guard let userDefaults = UserDefaults(suiteName: APP_GROUP),
+              let savedArray = userDefaults.array(forKey: DATA_KEY) as? [[String: Any]] else {
+            print("[SDK] Nessun caller trovato")
+            return []
+        }
+        return savedArray.map { Caller(dictionary: $0) }
+    }
 
     // MARK: - Impostazioni generali
     func openSettings(resolve: @escaping (Bool) -> Void, reject: @escaping (String, String, Error?) -> Void) {

@@ -33,15 +33,6 @@ class CallDirectoryHandler: CXCallDirectoryProvider {
         print("[CallDirectoryExtension] Request completed ✅")
     }
     
-    public static func loadCallersFromAppGroup() -> [Caller] {
-        guard let userDefaults = UserDefaults(suiteName: APP_GROUP),
-              let savedArray = userDefaults.array(forKey: DATA_KEY) as? [[String: Any]] else {
-            print("[SDK] Nessun caller trovato")
-            return []
-        }
-        return savedArray.map { Caller(dictionary: $0) }
-    }
-    
     // MARK: - Add Numbers
     private func addBlockingNumbers(callerList: [Caller], context: CXCallDirectoryExtensionContext) {
         var allNumbers = Set<UInt64>()
