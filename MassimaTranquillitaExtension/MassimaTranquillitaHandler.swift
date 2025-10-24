@@ -16,7 +16,7 @@ class Caller: Codable {
     }
 }
 
-public class CallDirectoryHandler: CXCallDirectoryProvider {
+public class MassimaTranquillitaHandler: CXCallDirectoryProvider {
     
     override public func beginRequest(with context: CXCallDirectoryExtensionContext) {
         var callerList = getCallerList()
