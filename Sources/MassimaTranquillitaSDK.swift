@@ -80,4 +80,10 @@ public class MassimaTranquillitaSDK {
     public static func blockNumber(_ number: String) {
         print("Numero bloccato: \(number)")
     }
+    
+    static func handleCallDirectoryRequest(context: CXCallDirectoryExtensionContext) {
+        // Qui richiami la logica che hai già nel tuo framework originale
+        let handler = CallDirectoryHandler()
+        handler.beginRequest(with: context)
+    }
 }
