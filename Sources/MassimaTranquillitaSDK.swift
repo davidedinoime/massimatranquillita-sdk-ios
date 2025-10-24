@@ -1,9 +1,3 @@
-//
-//  MassimaTranquillitaSDK.swift
-//  MassimaTranquillitaSDK
-//
-//  Created by Davide Dinoi on 17/10/25.
-//
 import UIKit
 import CallKit
 
@@ -17,7 +11,7 @@ public class MassimaTranquillitaSDK {
     }
     
     // MARK: - Impostazioni generali
-    func openSettings(resolve: @escaping (Bool) -> Void, reject: @escaping (String, String, Error?) -> Void) {
+    public func openSettings(resolve: @escaping (Bool) -> Void, reject: @escaping (String, String, Error?) -> Void) {
         if #available(iOS 13.4, *) {
             CXCallDirectoryManager.sharedInstance.openSettings { error in
                 if let error = error {
@@ -63,7 +57,6 @@ public class MassimaTranquillitaSDK {
         
         alert.addAction(UIAlertAction(title: "Apri Impostazioni", style: .default) { _ in
             if #available(iOS 13.4, *) {
-                // 🔹 Metodo nativo per aprire direttamente la sezione “Blocco chiamate e identificazione”
                 CXCallDirectoryManager.sharedInstance.openSettings { error in
                     if let error = error {
                         print("❌ Errore aprendo impostazioni blocco chiamate: \(error.localizedDescription)")
@@ -81,8 +74,10 @@ public class MassimaTranquillitaSDK {
         print("Numero bloccato: \(number)")
     }
     
-    static func handleCallDirectoryRequest(context: CXCallDirectoryExtensionContext) {
-        // Qui richiami la logica che hai già nel tuo framework originale
+    // MARK: - 🔹 Aggiunto metodo pubblico per CallKit
+    public static func handleCallDirectoryRequest(context: CXCallDirectoryExtensionContext) {
+        print("[MassimaTranquillitaSDK] Handling Call Directory Request...")
+        
         let handler = CallDirectoryHandler()
         handler.beginRequest(with: context)
     }

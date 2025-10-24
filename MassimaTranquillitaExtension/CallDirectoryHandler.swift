@@ -16,9 +16,9 @@ class Caller: Codable {
     }
 }
 
-class CallDirectoryHandler: CXCallDirectoryProvider {
+public class CallDirectoryHandler: CXCallDirectoryProvider {
     
-    override func beginRequest(with context: CXCallDirectoryExtensionContext) {
+    override public func beginRequest(with context: CXCallDirectoryExtensionContext) {
         var callerList = getCallerList()
         
         // Aggiungi numero di test se lista vuota
