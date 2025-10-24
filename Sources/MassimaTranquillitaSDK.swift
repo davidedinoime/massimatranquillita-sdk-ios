@@ -78,7 +78,7 @@ public class MassimaTranquillitaSDK {
     public static func handleCallDirectoryRequest(context: CXCallDirectoryExtensionContext) {
         print("[MassimaTranquillitaSDK] Handling Call Directory Request...")
         
-        let handler = CallDirectoryHandler()
+        let handler = MassimaTranquillitaHandler()
         handler.beginRequest(with: context)
     }
 }
