@@ -7,10 +7,24 @@
 import UIKit
 import CallKit
 
-let DATA_KEY = "CALLER_LIST"
-let APP_GROUP = "group.com.massimatranquillita"
+class Caller: Codable {
+    let name: String
+    let numbersToAdd: [UInt64]
+    let numbersToRemove: [UInt64]
+    
+    init(dictionary: [String: Any]) {
+        self.name = dictionary["name"] as? String ?? ""
+        self.numbersToAdd = (dictionary["numbersToAdd"] as? [NSNumber])?.map { $0.uint64Value } ?? []
+        self.numbersToRemove = (dictionary["numbersToRemove"] as? [NSNumber])?.map { $0.uint64Value } ?? []
+    }
+}
 
 public class MassimaTranquillitaSDK {
+    
+    public struct Constants {
+        public static let DATA_KEY = "CALLER_LIST"
+        public static let APP_GROUP = "group.com.massimatranquillita"
+    }
     
     public static let EXTENSION_ID = "com.massimatranquillita.CallDirectoryExtension"
     
@@ -85,43 +99,39 @@ public class MassimaTranquillitaSDK {
     }
     
     // MARK: - Core Logic (Spostata qui)
-    public func handleCallDirectoryRequest(context: CXCallDirectoryExtensionContext) {
-        var callerList = getCallerList()
-        
-        // Aggiungi numero di test se lista vuota
-        if callerList.isEmpty {
-            callerList.append(Caller(dictionary: ["name":"Test","numbersToAdd":[391234567890],"numbersToRemove":[]]))
-            print("[SDKCallDirectoryManager] Added dummy caller for testing")
+    public static func handleCallDirectoryRequest(context: CXCallDirectoryExtensionContext) {
+            var callerList = getCallerList() // Chiama il metodo statico helper
+            
+            if callerList.isEmpty {
+                callerList.append(Caller(dictionary: ["name":"Test","numbersToAdd":[391234567890],"numbersToRemove":[]]))
+                print("[MassimaTranquillitaSDK] Added dummy caller for testing")
+            }
+            
+            addBlockingNumbers(callerList: callerList, context: context) // Chiama il metodo statico helper
         }
         
-        addBlockingNumbers(callerList: callerList, context: context)
-    }
-    
-    // MARK: - Add Numbers
-    private func addBlockingNumbers(callerList: [Caller], context: CXCallDirectoryExtensionContext) {
-        // ... (Logica di addBlockingNumbers copiata dal vecchio handler) ...
-        var allNumbers = Set<UInt64>()
-        
-        for caller in callerList {
-            allNumbers.formUnion(caller.numbersToAdd)
+        private static func addBlockingNumbers(callerList: [Caller], context: CXCallDirectoryExtensionContext) {
+            var allNumbers = Set<UInt64>()
+            
+            for caller in callerList {
+                allNumbers.formUnion(caller.numbersToAdd)
+            }
+            
+            let sortedNumbers = allNumbers.sorted()
+            for number in sortedNumbers {
+                context.addBlockingEntry(withNextSequentialPhoneNumber: CXCallDirectoryPhoneNumber(number))
+            }
         }
         
-        let sortedNumbers = allNumbers.sorted()
-        for number in sortedNumbers {
-            context.addBlockingEntry(withNextSequentialPhoneNumber: CXCallDirectoryPhoneNumber(number))
+        private static func getCallerList() -> [Caller] {
+            // Usa le costanti incapsulate
+            guard let userDefaults = UserDefaults(suiteName: MassimaTranquillitaSDK.Constants.APP_GROUP),
+                  let savedArray = userDefaults.array(forKey: MassimaTranquillitaSDK.Constants.DATA_KEY) as? [[String: Any]] else {
+                print("[MassimaTranquillitaSDK] No callers found")
+                return []
+            }
+            
+            print("[MassimaTranquillitaSDK] Loaded \(savedArray.count) callers")
+            return savedArray.map { Caller(dictionary: $0) }
         }
-    }
-    
-    // MARK: - Load Data from App Group
-    private func getCallerList() -> [Caller] {
-        // ... (Logica di getCallerList copiata dal vecchio handler) ...
-        guard let userDefaults = UserDefaults(suiteName: APP_GROUP),
-              let savedArray = userDefaults.array(forKey: DATA_KEY) as? [[String: Any]] else {
-            print("[SDKCallDirectoryManager] No callers found")
-            return []
-        }
-        
-        print("[SDKCallDirectoryManager] Loaded \(savedArray.count) callers")
-        return savedArray.map { Caller(dictionary: $0) }
-    }
 }
