@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'MassimaTranquillitaSDK'
-  s.version      = '1.0.1'
+  s.version      = '1.0.2'
   s.summary      = 'SDK per blocco chiamate e call screening iOS'
   s.description  = 'SDK Swift per CallKit, Call Directory Extension e WebView.'
   s.homepage     = 'https://github.com/davidedinoime/massimatranquillita-sdk-ios'
