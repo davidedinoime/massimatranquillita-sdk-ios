@@ -15,14 +15,16 @@
 		07B4CBE02EAFB93500509B50 /* Exceptions for "MassimaTranquillitaSDK" folder in "MassimaTranquillita" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				MassimaTranquillitaExtension/CallDirectoryHandler.swift,
+				MassimaTranquillitaExtension/Info.plist,
 				Resources/Info.plist,
 			);
 			target = 0784F4ED2EAFB0EF001B4DAE /* MassimaTranquillita */;
 		};
-		07EDDDC02EAFBB10008BAD4D /* Exceptions for "MassimaTranquillitaExtension" folder in "MassimaTranquillitaExtension" target */ = {
+		07EDDDCD2EAFBDE9008BAD4D /* Exceptions for "MassimaTranquillitaSDK" folder in "MassimaTranquillitaExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				CallDirectoryHandler.swift,
+				MassimaTranquillitaExtension/CallDirectoryHandler.swift,
 			);
 			target = 0784F5102EAFB186001B4DAE /* MassimaTranquillitaExtension */;
 		};
@@ -33,16 +35,9 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				07B4CBE02EAFB93500509B50 /* Exceptions for "MassimaTranquillitaSDK" folder in "MassimaTranquillita" target */,
+				07EDDDCD2EAFBDE9008BAD4D /* Exceptions for "MassimaTranquillitaSDK" folder in "MassimaTranquillitaExtension" target */,
 			);
 			path = MassimaTranquillitaSDK;
-			sourceTree = "<group>";
-		};
-		07EDDDBD2EAFBB10008BAD4D /* MassimaTranquillitaExtension */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				07EDDDC02EAFBB10008BAD4D /* Exceptions for "MassimaTranquillitaExtension" folder in "MassimaTranquillitaExtension" target */,
-			);
-			path = MassimaTranquillitaExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -68,7 +63,6 @@
 		0784F4E42EAFB0EF001B4DAE = {
 			isa = PBXGroup;
 			children = (
-				07EDDDBD2EAFBB10008BAD4D /* MassimaTranquillitaExtension */,
 				0784F4F02EAFB0EF001B4DAE /* MassimaTranquillitaSDK */,
 				0784F4EF2EAFB0EF001B4DAE /* Products */,
 			);
