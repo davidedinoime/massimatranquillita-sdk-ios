@@ -9,7 +9,7 @@ import CallKit
 
 public class MassimaTranquillitaSDK {
     
-    public static let EXTENSION_ID = "com.massimatranquillita.CallDirectoryExtension"
+    public static let EXTENSION_ID = "it.massimatranquillitatest.sdk.CallDirectoryExtension"
 
     // MARK: - Inizializzazione SDK
     public static func initialize() {

@@ -7,15 +7,22 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		0784F4EE2EAFB0EF001B4DAE /* MassimaTranquillitaSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MassimaTranquillitaSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0784F4EE2EAFB0EF001B4DAE /* MassimaTranquillita.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MassimaTranquillita.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0784F5112EAFB186001B4DAE /* MassimaTranquillitaExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MassimaTranquillitaExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		0784F5162EAFB186001B4DAE /* Exceptions for "MassimaTranquillitaExtension" folder in "MassimaTranquillitaExtension" target */ = {
+		07B4CBE02EAFB93500509B50 /* Exceptions for "MassimaTranquillitaSDK" folder in "MassimaTranquillita" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Resources/Info.plist,
+			);
+			target = 0784F4ED2EAFB0EF001B4DAE /* MassimaTranquillita */;
+		};
+		07EDDDC02EAFBB10008BAD4D /* Exceptions for "MassimaTranquillitaExtension" folder in "MassimaTranquillitaExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				CallDirectoryHandler.swift,
 			);
 			target = 0784F5102EAFB186001B4DAE /* MassimaTranquillitaExtension */;
 		};
@@ -24,13 +31,16 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0784F4F02EAFB0EF001B4DAE /* MassimaTranquillitaSDK */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				07B4CBE02EAFB93500509B50 /* Exceptions for "MassimaTranquillitaSDK" folder in "MassimaTranquillita" target */,
+			);
 			path = MassimaTranquillitaSDK;
 			sourceTree = "<group>";
 		};
-		0784F5122EAFB186001B4DAE /* MassimaTranquillitaExtension */ = {
+		07EDDDBD2EAFBB10008BAD4D /* MassimaTranquillitaExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				0784F5162EAFB186001B4DAE /* Exceptions for "MassimaTranquillitaExtension" folder in "MassimaTranquillitaExtension" target */,
+				07EDDDC02EAFBB10008BAD4D /* Exceptions for "MassimaTranquillitaExtension" folder in "MassimaTranquillitaExtension" target */,
 			);
 			path = MassimaTranquillitaExtension;
 			sourceTree = "<group>";
@@ -58,8 +68,8 @@
 		0784F4E42EAFB0EF001B4DAE = {
 			isa = PBXGroup;
 			children = (
+				07EDDDBD2EAFBB10008BAD4D /* MassimaTranquillitaExtension */,
 				0784F4F02EAFB0EF001B4DAE /* MassimaTranquillitaSDK */,
-				0784F5122EAFB186001B4DAE /* MassimaTranquillitaExtension */,
 				0784F4EF2EAFB0EF001B4DAE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -67,7 +77,7 @@
 		0784F4EF2EAFB0EF001B4DAE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0784F4EE2EAFB0EF001B4DAE /* MassimaTranquillitaSDK.framework */,
+				0784F4EE2EAFB0EF001B4DAE /* MassimaTranquillita.framework */,
 				0784F5112EAFB186001B4DAE /* MassimaTranquillitaExtension.appex */,
 			);
 			name = Products;
@@ -86,9 +96,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		0784F4ED2EAFB0EF001B4DAE /* MassimaTranquillitaSDK */ = {
+		0784F4ED2EAFB0EF001B4DAE /* MassimaTranquillita */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0784F4F72EAFB0F0001B4DAE /* Build configuration list for PBXNativeTarget "MassimaTranquillitaSDK" */;
+			buildConfigurationList = 0784F4F72EAFB0F0001B4DAE /* Build configuration list for PBXNativeTarget "MassimaTranquillita" */;
 			buildPhases = (
 				0784F4E92EAFB0EF001B4DAE /* Headers */,
 				0784F4EA2EAFB0EF001B4DAE /* Sources */,
@@ -102,11 +112,11 @@
 			fileSystemSynchronizedGroups = (
 				0784F4F02EAFB0EF001B4DAE /* MassimaTranquillitaSDK */,
 			);
-			name = MassimaTranquillitaSDK;
+			name = MassimaTranquillita;
 			packageProductDependencies = (
 			);
 			productName = MassimaTranquillitaSDK;
-			productReference = 0784F4EE2EAFB0EF001B4DAE /* MassimaTranquillitaSDK.framework */;
+			productReference = 0784F4EE2EAFB0EF001B4DAE /* MassimaTranquillita.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		0784F5102EAFB186001B4DAE /* MassimaTranquillitaExtension */ = {
@@ -120,9 +130,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				0784F5122EAFB186001B4DAE /* MassimaTranquillitaExtension */,
 			);
 			name = MassimaTranquillitaExtension;
 			packageProductDependencies = (
@@ -149,7 +156,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0784F4E82EAFB0EF001B4DAE /* Build configuration list for PBXProject "MassimaTranquillitaSDK" */;
+			buildConfigurationList = 0784F4E82EAFB0EF001B4DAE /* Build configuration list for PBXProject "MassimaTranquillita" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -163,7 +170,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0784F4ED2EAFB0EF001B4DAE /* MassimaTranquillitaSDK */,
+				0784F4ED2EAFB0EF001B4DAE /* MassimaTranquillita */,
 				0784F5102EAFB186001B4DAE /* MassimaTranquillitaExtension */,
 			);
 		};
@@ -454,7 +461,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0784F4E82EAFB0EF001B4DAE /* Build configuration list for PBXProject "MassimaTranquillitaSDK" */ = {
+		0784F4E82EAFB0EF001B4DAE /* Build configuration list for PBXProject "MassimaTranquillita" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0784F4F52EAFB0F0001B4DAE /* Debug */,
@@ -463,7 +470,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0784F4F72EAFB0F0001B4DAE /* Build configuration list for PBXNativeTarget "MassimaTranquillitaSDK" */ = {
+		0784F4F72EAFB0F0001B4DAE /* Build configuration list for PBXNativeTarget "MassimaTranquillita" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0784F4F82EAFB0F0001B4DAE /* Debug */,
