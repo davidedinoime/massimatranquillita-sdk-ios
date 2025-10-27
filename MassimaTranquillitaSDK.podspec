@@ -13,14 +13,14 @@ Pod::Spec.new do |s|
   s.source = { :git => 'https://github.com/davidedinoime/massimatranquillita-sdk-ios.git', :tag => s.version.to_s }
 
   # File principali Swift
-  s.source_files = 'MassimaTranquillitaSDK/Sources/**/*.swift'
+  s.source_files = 'Sources/**/*.swift'
 
   # Risorse principali
-  s.resources = 'MassimaTranquillitaSDK/Resources/**/*.{plist,html}'
+  s.resources = 'Resources/**/*.{plist,html}'
 
   # Subspec Call Directory Extension
   s.subspec 'CallDirectoryExtension' do |ext|
-    ext.source_files = 'MassimaTranquillitaSDK/MassimaTranquillitaExtension/**/*.swift'
-    ext.resources = 'MassimaTranquillitaSDK/MassimaTranquillitaExtension/Info.plist'
+    ext.source_files = 'MassimaTranquillitaExtension/**/*.swift'
+    ext.resources = 'MassimaTranquillitaExtension/Info.plist'
   end
 end
