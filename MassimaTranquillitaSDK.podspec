@@ -16,11 +16,11 @@ Pod::Spec.new do |s|
   s.source_files = 'Sources/**/*.swift'
 
   # Risorse principali
-  s.resources = 'Resources/**/*.{plist,html}'
+  s.resources = 'MassimaTranquillitaSDK/Resources/**/*.{plist,html}'
 
   # Subspec Call Directory Extension
   s.subspec 'CallDirectoryExtension' do |ext|
-    ext.source_files = 'MassimaTranquillitaExtension/**/*.swift'
-    ext.resources = 'MassimaTranquillitaExtension/Info.plist'
+    ext.source_files = 'MassimaTranquillitaSDK/MassimaTranquillitaExtension/**/*.swift'
+    ext.resources = 'MassimaTranquillitaSDK/MassimaTranquillitaExtension/Info.plist'
   end
 end
