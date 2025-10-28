@@ -24,6 +24,17 @@ public class CallBlockerWebViewController: UIViewController {
             // Resetta per evitare ricaricamenti non voluti se il VC viene riusato
             urlToLoad = nil
         }
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appDidBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func appDidBecomeActive() {
+        getCallScreeningStatusAsync()
     }
     
     public func loadURL(_ url: URL) {
@@ -117,6 +128,10 @@ public class CallBlockerWebViewController: UIViewController {
         DispatchQueue.main.async {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
