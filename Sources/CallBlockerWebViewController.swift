@@ -123,7 +123,7 @@ public class CallBlockerWebViewController: UIViewController {
 // MARK: - WKScriptMessageHandler
 extension CallBlockerWebViewController: WKScriptMessageHandler {
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        guard let body = message.body as? [String: Any], let method = body["method"] as? String else { return }
+        guard let body = message.body as? [String: Any], let method = body["action"] as? String else { return }
         
         switch method {
         case "blockNumber":
