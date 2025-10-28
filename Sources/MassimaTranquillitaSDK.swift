@@ -36,17 +36,32 @@ public class MassimaTranquillitaSDK {
 
     // MARK: - Call Screening
     public static func isCallScreeningRoleActive(completion: @escaping (Bool) -> Void) {
-        CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: EXTENSION_ID) { status, error in
-            if let error = error {
-                #if targetEnvironment(simulator)
-                completion(false)
-                #else
-                print("[MassimaTranquillitaSDK] Errore getEnabledStatus: \(error.localizedDescription)")
-                completion(false)
-                #endif
-                return
+        #if targetEnvironment(simulator)
+        DispatchQueue.main.async {
+            completion(false)
+        }
+        return
+        #endif
+
+        let extensionID = EXTENSION_ID
+        CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: extensionID) { status, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("[MassimaTranquillitaSDK] Errore getEnabledStatus per '\(extensionID)': \(error.localizedDescription)")
+                    completion(false)
+                    return
+                }
+
+                // status NON è opzionale, usalo direttamente
+                switch status {
+                case .enabled:
+                    completion(true)
+                case .disabled, .unknown:
+                    completion(false)
+                @unknown default:
+                    completion(false)
+                }
             }
-            completion(status == .enabled)
         }
     }
 
