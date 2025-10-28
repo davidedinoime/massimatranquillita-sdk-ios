@@ -36,21 +36,48 @@ public class MassimaTranquillitaSDK {
         }
     }
     
-    /// Controlla se l’estensione Call Directory è attiva
-    public static func isCallScreeningRoleActive(completion: @escaping (Bool) -> Void) {
-#if targetEnvironment(simulator)
-        DispatchQueue.main.async { completion(false) }
-        return
-#endif
-        let extensionID = EXTENSION_ID
-        CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: extensionID) { status, error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    print("❌ Errore recuperando stato: \(error.localizedDescription)")
-                    completion(false)
+    // Controlla se l’estensione Call Directory è attiva
+    public static func isCallScreeningRoleActive() async -> Bool {
+        return await withCheckedContinuation { continuation in
+            #if targetEnvironment(simulator)
+            continuation.resume(returning: false)
+            return
+            #endif
+     
+            let extensionID = EXTENSION_ID
+            var didResume = false
+     
+            // Prima proviamo a ricaricare l'estensione
+            CXCallDirectoryManager.sharedInstance.reloadExtension(withIdentifier: extensionID) { reloadError in
+                guard !didResume else { return }
+     
+                if let reloadError = reloadError {
+                    print("❌ Errore ricaricando estensione: \(reloadError.localizedDescription)")
+                    didResume = true
+                    continuation.resume(returning: false)
                     return
                 }
-                completion(status == .enabled)
+     
+                // Ora leggiamo lo stato aggiornato
+                CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: extensionID) { status, error in
+                    guard !didResume else { return }
+                    didResume = true
+     
+                    if let error = error {
+                        print("❌ Errore recuperando stato: \(error.localizedDescription)")
+                        continuation.resume(returning: false)
+                    } else {
+                        print("Status chiamata: \(status.rawValue)")
+                        switch status {
+                        case .enabled:
+                            continuation.resume(returning: true)
+                        case .disabled, .unknown:
+                            continuation.resume(returning: false)
+                        @unknown default:
+                            continuation.resume(returning: false)
+                        }
+                    }
+                }
             }
         }
     }
