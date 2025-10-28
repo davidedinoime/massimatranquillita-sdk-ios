@@ -113,10 +113,31 @@ public class CallBlockerWebViewController: UIViewController {
     }
     
     private func requestRole() {
-        DispatchQueue.main.async {
+        guard let extensionID = MassimaTranquillitaSDK.currentExtensionID else { return }
+
+        if #available(iOS 13.4, *) {
+            CXCallDirectoryManager.sharedInstance.openSettings { error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        NSLog("[BlockList] Errore aprendo le impostazioni: \(error.localizedDescription)")
+                        // Se vuoi, puoi avvisare la webview JS anche dell'errore
+                        self.callJS("window.onOpenSettingsError('\(self.escapeForJS(error.localizedDescription))');")
+                    } else {
+                        NSLog("[BlockList] Impostazioni aperte correttamente")
+                        // Dopo un breve delay, aggiorniamo lo status del Call Screening
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                            self.getCallScreeningStatusAsync()
+                        }
+                    }
+                }
+            }
+        } else {
+            NSLog("[BlockList] Open settings non supportato su questa versione iOS")
+            // fallback: apri le impostazioni generali
             if let url = URL(string: UIApplication.openSettingsURLString) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
+            // Aggiorna comunque lo status
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
                 self.getCallScreeningStatusAsync()
             }
