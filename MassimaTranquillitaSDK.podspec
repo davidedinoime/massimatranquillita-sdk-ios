@@ -12,13 +12,14 @@ Pod::Spec.new do |s|
 
   s.source = { :git => 'https://github.com/davidedinoime/massimatranquillita-sdk-ios.git', :tag => s.version.to_s }
 
-  # File principali Swift
+  # ✅ File Swift principali
   s.source_files = 'Sources/**/*.swift'
 
-  # Risorse principali
-  s.resources = 'Resources/**/*.{plist,html}'
+  # ✅ Risorse reali dell'SDK (NO Info.plist, per evitare conflitti)
+  # Includi solo html o altri asset non di sistema
+  s.resources = ['Resources/**/*.html']
 
-  # Subspec Call Directory Extension
+  # ✅ Subspec: solo codice dell'estensione, niente plist
   s.subspec 'CallDirectoryExtension' do |ext|
     ext.source_files = 'MassimaTranquillitaExtension/**/*.swift'
   end
