@@ -73,14 +73,10 @@
 
     // iOS usa window.webkit.messageHandlers.<name>.postMessage
     function callBridge(method) {
-        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.CallBlockerBridge) {
-            try {
-                window.webkit.messageHandlers.CallBlockerBridge.postMessage({ action: method });
-            } catch (e) {
-                console.warn(`Errore durante ${method}:`, e);
-            }
+        if (window.CallBlockerBridgeReady) {
+            window.webkit.messageHandlers.CallBlockerBridge.postMessage({ action: method });
         } else {
-            console.error("Bridge iOS non pronto.");
+            console.warn("Bridge non pronto");
         }
     }
 

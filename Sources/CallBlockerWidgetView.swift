@@ -79,11 +79,21 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
     }
 
     private func getCallScreeningStatusAsync() {
-        // Assumendo che MassimaTranquillitaSDK.EXTENSION_ID sia disponibile
-        guard let extensionID = MassimaTranquillitaSDK.currentExtensionID else { return }
+        guard let extensionID = MassimaTranquillitaSDK.currentExtensionID else {
+            callJS_updateStatus(active: false)
+            return
+        }
+        
         if #available(iOS 11.0, *) {
-            CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: extensionID) { [weak self] status, _ in
-                self?.callJS_updateStatus(active: status == .enabled)
+            CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: extensionID) { [weak self] status, error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        print("Errore ottenendo stato estensione: \(error.localizedDescription)")
+                        self?.callJS_updateStatus(active: false)
+                        return
+                    }
+                    self?.callJS_updateStatus(active: status == .enabled)
+                }
             }
         } else {
             callJS_updateStatus(active: false)
