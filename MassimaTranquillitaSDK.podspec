@@ -21,6 +21,5 @@ Pod::Spec.new do |s|
   # Subspec Call Directory Extension
   s.subspec 'CallDirectoryExtension' do |ext|
     ext.source_files = 'MassimaTranquillitaExtension/**/*.swift'
-    ext.resources = 'MassimaTranquillitaExtension/Info.plist'
   end
 end
