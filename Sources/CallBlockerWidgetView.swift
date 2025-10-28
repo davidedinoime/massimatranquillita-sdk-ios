@@ -137,32 +137,30 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
     
     // MARK: - Correzione Logica e Sintassi di requestRole()
     private func requestRole() {
-        DispatchQueue.main.async {
-            guard let topVC = UIApplication.shared.topViewController() else {
-                print("❌ Nessun ViewController per presentare l'Alert di richiesta ruolo")
-                return
-            }
-            
-            let alert = UIAlertController(
-                title: "Attiva blocco chiamate",
-                message: "Per abilitare il blocco chiamate, devi attivare l'estensione Massima Tranquillità nelle impostazioni di iOS.",
-                preferredStyle: .alert
-            )
-            
-            // La chiusura non è necessaria qui, perché l'alert è modale.
-            // L'eventuale callback a JS per informare l'utente va gestito dopo il ritorno dalle Impostazioni.
-            alert.addAction(UIAlertAction(title: "Annulla", style: .cancel) { _ in
-                // Azione da eseguire all'annullamento (es. notificare JS)
-            })
-            
-            alert.addAction(UIAlertAction(title: "Apri Impostazioni", style: .default) { _ in
-                if let url = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        if #available(iOS 13.4, *) {
+            CXCallDirectoryManager.sharedInstance.openSettings { error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        NSLog("[BlockList] Errore aprendo le impostazioni: \(error.localizedDescription)")
+                        // Notifica JS opzionale
+                        self.callJS("window.onOpenSettingsError && window.onOpenSettingsError('\(self.escapeForJS(error.localizedDescription))');")
+                    } else {
+                        NSLog("[BlockList] Impostazioni aperte correttamente")
+                        // Aggiorna lo status dopo un breve delay
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                            self.getCallScreeningStatusAsync()
+                        }
+                    }
                 }
-                // Azione da eseguire dopo aver aperto le impostazioni (es. notificare JS)
-            })
-            
-            topVC.present(alert, animated: true)
+            }
+        } else {
+            // Fallback per iOS < 13.4: apri le impostazioni generali
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                self.getCallScreeningStatusAsync()
+            }
         }
     }
     
@@ -177,6 +175,10 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func escapeForJS(_ s: String) -> String {
+        return s.replacingOccurrences(of: "'", with: "\\'")
     }
 }
 
