@@ -16,11 +16,27 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setupWebView()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appDidBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+
     }
 
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupWebView()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appDidBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+
     }
 
     private func setupWebView() {
@@ -154,9 +170,15 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         callJS("window.CallBlockerBridgeReady = true;")
     }
+    
+    @objc private func appDidBecomeActive() {
+        getCallScreeningStatusAsync()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
-
-// ----------------------------------------------------------------------
 
 
 // MARK: - Estensione UIApplication (Spostata fuori dalla classe per coerenza)
