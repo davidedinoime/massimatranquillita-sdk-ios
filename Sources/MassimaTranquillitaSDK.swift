@@ -11,6 +11,8 @@ public class MassimaTranquillitaSDK {
     
     public static let EXTENSION_ID = "it.massimatranquillitatest.sdk.CallDirectoryExtension"
     
+    private static var observer: NSObjectProtocol?
+    
     // MARK: - Inizializzazione SDK
     public static func initialize() {
         print("MassimaTranquillitaSDK inizializzato ✅")
@@ -34,36 +36,25 @@ public class MassimaTranquillitaSDK {
         }
     }
     
-    // MARK: - Call Screening
+    /// Controlla se l’estensione Call Directory è attiva
     public static func isCallScreeningRoleActive(completion: @escaping (Bool) -> Void) {
 #if targetEnvironment(simulator)
-        DispatchQueue.main.async {
-            completion(false)
-        }
+        DispatchQueue.main.async { completion(false) }
         return
 #endif
-        
         let extensionID = EXTENSION_ID
         CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: extensionID) { status, error in
             DispatchQueue.main.async {
                 if let error = error {
-                    print("[MassimaTranquillitaSDK] Errore getEnabledStatus per '\(extensionID)': \(error.localizedDescription)")
+                    print("❌ Errore recuperando stato: \(error.localizedDescription)")
                     completion(false)
                     return
                 }
-                
-                // status NON è opzionale, usalo direttamente
-                switch status {
-                case .enabled:
-                    completion(true)
-                case .disabled, .unknown:
-                    completion(false)
-                @unknown default:
-                    completion(false)
-                }
+                completion(status == .enabled)
             }
         }
     }
+    
     
     public static func requestCallScreeningRole(
         from viewController: UIViewController,
@@ -96,7 +87,6 @@ public class MassimaTranquillitaSDK {
                     }
                 }
             }
-            
             completion(true)
         })
         
