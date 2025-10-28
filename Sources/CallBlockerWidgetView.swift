@@ -64,12 +64,12 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
     }
 
     private func callJS_updateStatus(active: Bool) {
-        callJS("updateStatusCallback(\(active ? "true" : "false"))")
+        callJS("setCallScreeningStatus(\(active ? "true" : "false"))")
     }
 
     // MARK: - WKScriptMessageHandler
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        guard let body = message.body as? [String:Any], let action = body["method"] as? String else { return }
+        guard let body = message.body as? [String:Any], let action = body["action"] as? String else { return }
         switch action {
         case "getCallScreeningStatusAsync": getCallScreeningStatusAsync()
         case "requestRole": requestRole()

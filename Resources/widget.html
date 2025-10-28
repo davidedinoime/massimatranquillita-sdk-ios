@@ -2,8 +2,8 @@
 <html lang="it">
 
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Massima Tranquillità Widget</title>
     <style>
         body {
@@ -62,45 +62,62 @@
 </head>
 
 <body>
-<div class="widget" id="widget">
-    <h2>Massima Tranquillità</h2>
-    <div id="toggle" class="toggle"></div>
-</div>
+    <div class="widget" id="widget">
+        <h2>Massima Tranquillità</h2>
+        <div id="toggle" class="toggle"></div>
+    </div>
 
-<script>
-    const toggle = document.getElementById('toggle');
-    const widget = document.getElementById('widget');
+    <script>
+        const toggle = document.getElementById('toggle');
+        const widget = document.getElementById('widget');
 
-    // iOS usa window.webkit.messageHandlers.<name>.postMessage
-    function callBridge(method) {
-        if (window.CallBlockerBridgeReady) {
-            window.webkit.messageHandlers.CallBlockerBridge.postMessage({ action: method });
-        } else {
-            console.warn("Bridge non pronto");
+        // ✅ Funzione universale per comunicare con Swift
+        function callBridge(method, extra = {}) {
+            try {
+                if (window.webkit?.messageHandlers?.CallBlockerBridge) {
+                    window.webkit.messageHandlers.CallBlockerBridge.postMessage({
+                        action: method,
+                        ...extra
+                    });
+                } else {
+                    console.warn("❌ Bridge non disponibile su questa piattaforma");
+                }
+            } catch (e) {
+                console.error("Errore durante postMessage:", e);
+            }
         }
-    }
 
-    // Funzione per aggiornare lo stato del toggle
-    function updateStatus(active) {
-        if (active) toggle.classList.add('active');
-        else toggle.classList.remove('active');
-    }
+        // ✅ Aggiorna graficamente il toggle
+        function updateStatus(active) {
+            if (active) {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+        }
 
-    // Click sul toggle -> richiedi ruolo
-    toggle.addEventListener('click', e => {
-        e.stopPropagation();
-        callBridge("requestRole");
-    });
+        // ✅ Chiamata da Swift per aggiornare stato
+        function setCallScreeningStatus(active) {
+            console.log("📡 Stato aggiornato da iOS:", active);
+            updateStatus(active);
+        }
 
-    // Click sulla widget -> apri UI servizio
-    widget.addEventListener('click', () => {
-        callBridge("openServiceUI");
-    });
+        // ✅ Click sul toggle → richiede ruolo
+        toggle.addEventListener('click', e => {
+            e.stopPropagation();
+            callBridge("requestRole");
+        });
 
-    // JS chiamato da Swift quando lo stato cambia
-    function setCallScreeningStatus(active) {
-        updateStatus(active);
-    }
-</script>
+        // ✅ Click sul widget → apre UI servizio
+        widget.addEventListener('click', () => {
+            callBridge("openServiceUI");
+        });
+
+        // ✅ Al caricamento: richiede stato estensione
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("🔄 Richiesta stato estensione a iOS...");
+            callBridge("getCallScreeningStatusAsync");
+        });
+    </script>
 </body>
 </html>
