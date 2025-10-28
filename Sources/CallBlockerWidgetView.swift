@@ -69,7 +69,7 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
 
     // MARK: - WKScriptMessageHandler
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        guard let body = message.body as? [String:Any], let action = body["action"] as? String else { return }
+        guard let body = message.body as? [String:Any], let action = body["method"] as? String else { return }
         switch action {
         case "getCallScreeningStatusAsync": getCallScreeningStatusAsync()
         case "requestRole": requestRole()
