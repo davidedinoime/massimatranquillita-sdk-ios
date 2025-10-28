@@ -90,7 +90,7 @@ public class CallBlockerWebViewController: UIViewController {
     }
     
     private func getCallScreeningStatusAsync() {
-        let extensionID = MassimaTranquillitaSDK.EXTENSION_ID
+        guard let extensionID = MassimaTranquillitaSDK.currentExtensionID else { return }
         if #available(iOS 11.0, *) {
             CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: extensionID) { status, _ in
                 let active = status == .enabled

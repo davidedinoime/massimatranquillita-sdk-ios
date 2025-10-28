@@ -80,7 +80,7 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
 
     private func getCallScreeningStatusAsync() {
         // Assumendo che MassimaTranquillitaSDK.EXTENSION_ID sia disponibile
-        let extensionID = MassimaTranquillitaSDK.EXTENSION_ID
+        guard let extensionID = MassimaTranquillitaSDK.currentExtensionID else { return }
         if #available(iOS 11.0, *) {
             CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: extensionID) { [weak self] status, _ in
                 self?.callJS_updateStatus(active: status == .enabled)
