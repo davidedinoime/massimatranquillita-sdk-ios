@@ -124,7 +124,7 @@ public class CallBlockerWidgetView: UIView, WKScriptMessageHandler, WKNavigation
             }
 
             let webVC = CallBlockerWebViewController()
-            webVC.modalPresentationStyle = .formSheet
+            webVC.modalPresentationStyle = .fullScreen
 
             // 👉 Adesso loadURL salva l'URL e lo carica in viewDidLoad
             if let url = URL(string: "http://192.168.1.226:3000/") {
